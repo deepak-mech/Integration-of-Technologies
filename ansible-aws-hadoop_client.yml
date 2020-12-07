@@ -1,0 +1,53 @@
+-  hosts: client
+   vars_files:
+     - client_var.yml
+   tasks:
+   - name: "Copying hadoop file"
+     copy:
+       src: "{{ hadoop_path }}"
+       dest: "/root"
+
+   - name: "Copying jdk file"
+     copy:  
+       src: "{{ jdk_path }}"
+       dest: "/root"
+
+   - name: "Installing jdk"
+     command: "rpm -ivh {{ jdk_software }}"
+     ignore_errors: yes
+
+   - name: "Installing hadoop"
+     command: "rpm -ivh {{ hadoop_software }} --force"
+     ignore_errors: yes
+
+   - name: "Copying the core-site.xml file"
+     template:
+       src: "{{ core_file }}"
+       dest: "/etc/hadoop"
+  
+   - name: "Files available"
+     command: "{{ client_report }}"
+
+   - name: "Deleting previous files"
+     command: "{{ remove_file }}"
+     ignore_errors: yes
+
+   - name: "Copying file to client"
+     copy:
+       src: "{{ client_file_src }}"
+       dest: "{{ client_file_dest }}"
+
+   - name: "Uploading files by client"
+     command: "{{ put_file }}"
+    
+   - name: "Files available"
+     command: "{{ client_report }}"
+ 
+   - name: "Showing hadoop report"
+     command: "{{ hadoop_report }}"
+
+
+
+
+
+
